@@ -1,18 +1,18 @@
 import random, time
 
-i = 1
+
 
 
 def make_gun():
-    global i
+
     gun = {
-        "level": i,
-        "shots_per_second": i,
-        "shot_power": i,
-        "shot_speed": i,
+        "level": 6,
+        "shots_per_second": 6,
+        "shot_power": 0,
+        "shot_speed": 6,
         "time_shot": time.time()
     }
-    i += 1
+
     guns.append(gun)
     bullet_lines.append([])
     brick_lines.append([])
@@ -32,38 +32,57 @@ def make_bullet(gun: dict, gun_line_number):
         gun["time_shot"] = time.time()
 
 
-def step():
-    global game_over
-    if game_over:
-        return
-
+def make_all_bullets():
     num = 0
     for gun in guns:
         make_bullet(gun, num)
         num += 1
 
-    num = 0
+def remove_bullets():
     for bul_line in bullet_lines:
         for bul in bul_line.copy():
             bul["x"] += bul["speed"]
             if bul["x"]>850:
                 bul_line.remove(bul)
-                continue
 
-            if len(brick_lines[num])>0:
-                first_brick = brick_lines[num][0]
-                if bul["x"]>first_brick["x"]:
-                    first_brick["hp"]-=bul["power"]
-                    bul_line.remove(bul)
-                    if first_brick["hp"]<=0:
-                        brick_lines[num].remove(first_brick)
-        num +=1
+def kill_bricks():
+    num = 0
+    for bul_line in bullet_lines:
+        for bul in bul_line.copy():
 
+            if len(brick_lines[num]) == 0:
+                break
+
+            first_brick = brick_lines[num][0]
+            if bul["x"] > first_brick["x"]:
+                first_brick["hp"] -= bul["power"]
+
+                bul_line.remove(bul)
+                if first_brick["hp"] <= 0:
+                    brick_lines[num].remove(first_brick)
+        num += 1
+
+
+def move_bricks():
+    global game_over
     for brick_line in brick_lines:
         for brick in brick_line:
             brick["x"] -= 1
             if brick['x']<155:
                 game_over=True
+
+def step():
+    global game_over
+    if game_over:
+        return
+
+    make_all_bullets()
+
+    remove_bullets()
+
+    kill_bricks()
+
+    move_bricks()
 
 
 

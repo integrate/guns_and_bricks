@@ -1,6 +1,6 @@
 import pygame
 
-import model
+import model, draw_model
 
 TIMER_BRICK = pygame.event.custom_type()
 pygame.time.set_timer(TIMER_BRICK, 1000)
@@ -19,3 +19,6 @@ def process_events():
 
         if e.type==TIMER_WAVE:
             model.brick_points_per_second+=1
+
+        if e.type==pygame.MOUSEBUTTONDOWN:
+            draw_model.click_button(e.pos[0], e.pos[1])
