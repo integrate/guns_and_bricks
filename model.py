@@ -1,15 +1,19 @@
 import random, time
 
-
-
+def add_gun():
+    if len(guns)<8:
+        make_gun()
 
 def make_gun():
-
     gun = {
-        "level": 6,
-        "shots_per_second": 6,
-        "shot_power": 0,
-        "shot_speed": 6,
+        "level": 1,
+        "level_price": 10,
+        "shots_per_second": 1,
+        "shots_per_second_price": 10,
+        "shot_power": 1,
+        "shot_power_price": 10,
+        "shot_speed": 1,
+        "shot_speed_price": 10,
         "time_shot": time.time()
     }
 
@@ -38,14 +42,17 @@ def make_all_bullets():
         make_bullet(gun, num)
         num += 1
 
+
 def remove_bullets():
     for bul_line in bullet_lines:
         for bul in bul_line.copy():
             bul["x"] += bul["speed"]
-            if bul["x"]>850:
+            if bul["x"] > 850:
                 bul_line.remove(bul)
 
+
 def kill_bricks():
+    global coins
     num = 0
     for bul_line in bullet_lines:
         for bul in bul_line.copy():
@@ -60,6 +67,7 @@ def kill_bricks():
                 bul_line.remove(bul)
                 if first_brick["hp"] <= 0:
                     brick_lines[num].remove(first_brick)
+                    coins += first_brick["coins"]
         num += 1
 
 
@@ -68,8 +76,9 @@ def move_bricks():
     for brick_line in brick_lines:
         for brick in brick_line:
             brick["x"] -= 1
-            if brick['x']<155:
-                game_over=True
+            if brick['x'] < 155:
+                game_over = True
+
 
 def step():
     global game_over
@@ -83,8 +92,6 @@ def step():
     kill_bricks()
 
     move_bricks()
-
-
 
 
 def make_bricks():
@@ -124,14 +131,46 @@ def add_brick(hp, line_number):
     brick = {
         "level": level,
         "hp": hp,
-        "x": 900
+        "x": 900,
+        "coins": hp
     }
 
     brick_lines[line_number].append(brick)
 
-game_over=False
 
-coins = 0
+def buy_shot_power(gun_num):
+    global coins
+
+    if coins >= guns[gun_num]["shot_power_price"]:
+        guns[gun_num]["shot_power"] += 1
+        coins -= guns[gun_num]["shot_power_price"]
+        guns[gun_num]["shot_power_price"] = int(1.1 * guns[gun_num]["shot_power_price"])
+
+
+def buy_shot_speed(gun_num):
+    global coins
+    if coins >= guns[gun_num]["shot_speed_price"]:
+        guns[gun_num]["shot_speed"] += 1
+        coins -= guns[gun_num]["shot_speed_price"]
+        guns[gun_num]["shot_speed_price"] = int(1.1*guns[gun_num]["shot_speed_price"])
+
+
+
+def buy_shot_count(gun_num):
+    global coins
+    if coins >= guns[gun_num]["shots_per_second_price"]:
+        guns[gun_num]["shots_per_second"] += 1
+        coins -= guns[gun_num]["shots_per_second_price"]
+        guns[gun_num]["shots_per_second_price"] = int(1.1 * guns[gun_num]["shots_per_second_price"])
+
+
+def buy_gun_level(gun_num):
+    guns[gun_num]["level"] += 1
+
+
+game_over = False
+
+coins = 100
 
 guns = []
 bullet_lines = []

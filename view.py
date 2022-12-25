@@ -10,30 +10,52 @@ def draw():
     draw_model.make_upgrade_rects(screen)
 
     pygame.draw.line(screen, [0, 0, 255], [155, 0], [155, 600])
-    #
-    # i = 0
-    # for gun in model.guns:
-    #     draw_gun(gun, draw_model.line_rects[i])
-    #     i+=1
-    #
-    #
-    #
-    # # draw bullets
-    # i=0
-    # for bul_line in model.bullet_lines:
-    #     for bul in bul_line:
-    #         draw_bul(bul, draw_model.line_rects[i])
-    #     i+=1
-    #
-    # # draw bricks
-    # i=0
-    # for brick_line in model.brick_lines:
-    #     for brick in brick_line:
-    #         draw_brick(brick, draw_model.line_rects[i])
-    #     i+=1
-    #
-    # if model.game_over:
-    #     screen.blit(game_over_pic, [450-game_over_pic.get_width()/2, 300-game_over_pic.get_height()/2])
+
+    i = 0
+    for gun in model.guns:
+        draw_gun(gun, draw_model.line_rects[i])
+        i+=1
+
+
+
+    # draw bullets
+    i=0
+    for bul_line in model.bullet_lines:
+        for bul in bul_line:
+            draw_bul(bul, draw_model.line_rects[i])
+        i+=1
+
+    # draw bricks
+    i=0
+    for brick_line in model.brick_lines:
+        for brick in brick_line:
+            draw_brick(brick, draw_model.line_rects[i])
+        i+=1
+
+    #draw coins
+    screen.blit(coinpic, [780, 5])
+    coin_text = coins_font.render(str(model.coins), True, [238, 177, 1])
+    screen.blit(coin_text, [810, 5])
+
+    #draw buy buttons
+    if draw_model.increase_shoot_speed_rect!=None:
+        text = price_font.render(str(model.guns[draw_model.selected_line_num]["shot_speed_price"]),True, [255, 0, 0])
+        screen.blit(text, draw_model.increase_shoot_speed_rect)
+
+    if draw_model.increase_shoot_count_rect!=None:
+        text = price_font.render(str(model.guns[draw_model.selected_line_num]["shots_per_second_price"]),True, [255, 0, 0])
+        screen.blit(text, draw_model.increase_shoot_count_rect)
+
+    if draw_model.increase_shoot_power_rect!=None:
+        text = price_font.render(str(model.guns[draw_model.selected_line_num]["shot_power_price"]),True, [255, 0, 0])
+        screen.blit(text, draw_model.increase_shoot_power_rect)
+
+    #plus rect
+    screen.blit(pluspic, [50, 10])
+
+    #draw game over
+    if model.game_over:
+        screen.blit(game_over_pic, [450-game_over_pic.get_width()/2, 300-game_over_pic.get_height()/2])
 
     pygame.display.flip()
 
@@ -97,6 +119,8 @@ def get_gun_pic(level):
     if level == 8:
         return gunpic8
 
+    return gunpic8
+
 
 def get_brick_pic(level):
     if level == 1:
@@ -127,5 +151,15 @@ brickpic4 = load_brick(4)
 
 print(pygame.font.get_fonts())
 font = pygame.font.SysFont("arial", 12, True)
+
 font_game_over = pygame.font.SysFont("comicsansms", 140, True)
 game_over_pic = font_game_over.render("GAME OVER", True, [255, 10, 10])
+
+coinpic = pygame.image.load("images/coin.png")
+coinpic = pygame.transform.scale(coinpic, [20, 20])
+coins_font = pygame.font.SysFont("arial", 20, True)
+
+price_font = pygame.font.SysFont("arial", 10, True)
+
+pluspic = pygame.image.load("images/green plus sign.png")
+pluspic = pygame.transform.scale(pluspic, [20, 20])
